@@ -1,0 +1,11 @@
+C:\Users\Simon\Desktop\Webserver\bin\Debug\net6.0\publish\Webserver.exe
+C:\Users\Simon\Desktop\Webserver\bin\Debug\net6.0\publish\appsettings.Development.json
+C:\Users\Simon\Desktop\Webserver\bin\Debug\net6.0\publish\appsettings.json
+C:\Users\Simon\Desktop\Webserver\bin\Debug\net6.0\publish\Webserver.dll
+C:\Users\Simon\Desktop\Webserver\bin\Debug\net6.0\publish\Webserver.deps.json
+C:\Users\Simon\Desktop\Webserver\bin\Debug\net6.0\publish\Webserver.runtimeconfig.json
+C:\Users\Simon\Desktop\Webserver\bin\Debug\net6.0\publish\Webserver.pdb
+C:\Users\Simon\Desktop\Webserver\bin\Debug\net6.0\publish\Microsoft.OpenApi.dll
+C:\Users\Simon\Desktop\Webserver\bin\Debug\net6.0\publish\Swashbuckle.AspNetCore.Swagger.dll
+C:\Users\Simon\Desktop\Webserver\bin\Debug\net6.0\publish\Swashbuckle.AspNetCore.SwaggerGen.dll
+C:\Users\Simon\Desktop\Webserver\bin\Debug\net6.0\publish\Swashbuckle.AspNetCore.SwaggerUI.dll
