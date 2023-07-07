@@ -41,10 +41,7 @@ class Program
         string request = Encoding.ASCII.GetString(buffer, 0, bytesRead);
         Console.WriteLine("Request: \n" + request);
         
-        string response = "HTTP/1.1 200 OK\r\n" +
-                          "Content-Type: text/plain\r\n" +
-                          "Connection: close\r\n\r\n" +
-                          "Hello, World!";
+        string response = EnvironmentExtensions.GetHTML("html/index.html");
 
         byte[] responseBytes = Encoding.ASCII.GetBytes(response);
         stream.Write(responseBytes, 0, responseBytes.Length);
