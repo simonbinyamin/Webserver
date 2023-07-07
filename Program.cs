@@ -1,15 +1,23 @@
 using System;
 using System.Net;
 using System.Net.Sockets;
+using System.Reflection;
+using System.Reflection.Metadata;
+using System.Security.Claims;
 using System.Text;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
+using Webserver.API;
 
 class Program
 {
-    static void Main()
+
+    static void Main(string[] args)
     {
         IPAddress ipAddress;
         int port = 8080;
         string environment = Environment.GetEnvironmentVariable("ENVIRONMENT");
+       
 
         if (EnvironmentExtensions.IsProductionEnvironment(environment))
         {
@@ -31,6 +39,7 @@ class Program
         }
     }
 
+
     static void HandleClientRequest(object clientObj)
     {
 
@@ -39,12 +48,36 @@ class Program
         NetworkStream stream = client.GetStream();
         int bytesRead = stream.Read(buffer, 0, buffer.Length);
         string request = Encoding.ASCII.GetString(buffer, 0, bytesRead);
-        Console.WriteLine("Request: \n" + request);
-        
-        string response = EnvironmentExtensions.GetHTML("html/index.html");
 
-        byte[] responseBytes = Encoding.ASCII.GetBytes(response);
-        stream.Write(responseBytes, 0, responseBytes.Length);
+
+        if (!string.IsNullOrEmpty(request))
+        {
+
+            string[] requestLines = request.Split(new[] { "\r\n" }, StringSplitOptions.None);
+            string[] requestTokens = requestLines[0].Split(' ');
+            string path = requestTokens[1];
+
+
+  
+            var reflected_method = (CustomAuthorizeAttribute)Attribute
+                .GetCustomAttribute(typeof(StockAPI)
+                .GetMethod("ProcessRequest"), 
+                typeof(CustomAuthorizeAttribute));
+
+            string response = "";
+
+            if (reflected_method.RouteAPI == path)
+            {
+                response = StockAPI.ProcessRequest();
+
+            }
+
+            byte[] responseBytes = Encoding.ASCII.GetBytes(response);
+            stream.Write(responseBytes, 0, responseBytes.Length);
+
+        }
+
+
 
         client.Close();
     }
