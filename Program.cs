@@ -17,11 +17,11 @@ class Program
         IPAddress ipAddress;
         int port = 8080;
         string environment = Environment.GetEnvironmentVariable("ENVIRONMENT");
-       
 
+       
         if (EnvironmentExtensions.IsProductionEnvironment(environment))
         {
-           ipAddress = IPAddress.Parse("169.254.129.3");
+           ipAddress = IPAddress.Parse("169.254.129.2");
         }
         else
         {
@@ -58,19 +58,54 @@ class Program
             string path = requestTokens[1];
 
 
-  
-            var reflected_method = (CustomAuthorizeAttribute)Attribute
-                .GetCustomAttribute(typeof(StockAPI)
-                .GetMethod("ProcessRequest"), 
-                typeof(CustomAuthorizeAttribute));
-
             string response = "";
 
-            if (reflected_method.RouteAPI == path)
+
+            var APIFolder = Environment.CurrentDirectory + "\\" + "API";
+
+            string[] apiFiles = Directory.GetFiles(APIFolder, "*.cs");
+
+
+            foreach (string filePath in apiFiles)
             {
-                response = StockAPI.ProcessRequest();
+                string fileName = Path.GetFileNameWithoutExtension(filePath);
+
+                Type apiType = Type.GetType("Webserver.API." + fileName);
+
+
+                MethodInfo[] methods = apiType.GetMethods();
+
+                foreach (MethodInfo method in methods)
+                {
+
+                    var reflected_method = (API_PathAttribute)Attribute
+                                            .GetCustomAttribute(apiType
+                                            .GetMethod(method.Name),
+                                            typeof(API_PathAttribute));
+
+                    if (reflected_method != null && reflected_method.RouteAPI == path)
+                    {
+                        string result = "";
+
+                        MethodInfo methodtoexecute = apiType.GetMethod(method.Name);
+                        if (methodtoexecute != null)
+                        {
+                            object myClassInstance = Activator.CreateInstance(apiType);
+                            result = methodtoexecute.Invoke(myClassInstance, null).ToString();
+                        }
+
+                        response = result;
+
+                    }
+
+                }
+
 
             }
+
+
+
+
 
             byte[] responseBytes = Encoding.ASCII.GetBytes(response);
             stream.Write(responseBytes, 0, responseBytes.Length);
