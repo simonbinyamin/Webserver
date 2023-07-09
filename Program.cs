@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.Net;
 using System.Net.Sockets;
 using System.Reflection;
@@ -50,64 +51,20 @@ class Program
         string request = Encoding.ASCII.GetString(buffer, 0, bytesRead);
 
 
+
+
+        //fav icon passed change to only req
         if (!string.IsNullOrEmpty(request))
         {
-
             string[] requestLines = request.Split(new[] { "\r\n" }, StringSplitOptions.None);
             string[] requestTokens = requestLines[0].Split(' ');
             string path = requestTokens[1];
+            byte[] responseBytes;
 
 
-            string response = "";
+            responseBytes = Encoding.ASCII.GetBytes(EnvironmentExtensions.FilterRoutes(path));
 
 
-            var APIFolder = Environment.CurrentDirectory + "\\" + "API";
-
-            string[] apiFiles = Directory.GetFiles(APIFolder, "*.cs");
-
-
-            foreach (string filePath in apiFiles)
-            {
-                string fileName = Path.GetFileNameWithoutExtension(filePath);
-
-                Type apiType = Type.GetType("Webserver.API." + fileName);
-
-
-                MethodInfo[] methods = apiType.GetMethods();
-
-                foreach (MethodInfo method in methods)
-                {
-
-                    var reflected_method = (API_PathAttribute)Attribute
-                                            .GetCustomAttribute(apiType
-                                            .GetMethod(method.Name),
-                                            typeof(API_PathAttribute));
-
-                    if (reflected_method != null && reflected_method.RouteAPI == path)
-                    {
-                        string result = "";
-
-                        MethodInfo methodtoexecute = apiType.GetMethod(method.Name);
-                        if (methodtoexecute != null)
-                        {
-                            object myClassInstance = Activator.CreateInstance(apiType);
-                            result = methodtoexecute.Invoke(myClassInstance, null).ToString();
-                        }
-
-                        response = result;
-
-                    }
-
-                }
-
-
-            }
-
-
-
-
-
-            byte[] responseBytes = Encoding.ASCII.GetBytes(response);
             stream.Write(responseBytes, 0, responseBytes.Length);
 
         }

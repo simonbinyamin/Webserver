@@ -10,7 +10,7 @@ namespace Webserver.API
             
         }
 
-        [API_Path("/StockAPI0")]
+        [API_Path("/")]
         public static string ProcessRequest()
         {
 

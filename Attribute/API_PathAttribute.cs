@@ -1,7 +1,5 @@
-﻿using System.Web.Http;
-
-[AttributeUsage(AttributeTargets.Method, AllowMultiple = true, Inherited = true)]
-public class API_PathAttribute : AuthorizeAttribute
+﻿[AttributeUsage(AttributeTargets.Method, AllowMultiple = true, Inherited = true)]
+public class API_PathAttribute : Attribute
 {
 
     public string RouteAPI { get; }
