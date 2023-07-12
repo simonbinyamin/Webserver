@@ -52,8 +52,6 @@ class Program
 
 
 
-
-        //fav icon passed change to only req
         if (!string.IsNullOrEmpty(request))
         {
             string[] requestLines = request.Split(new[] { "\r\n" }, StringSplitOptions.None);

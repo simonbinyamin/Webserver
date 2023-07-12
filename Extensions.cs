@@ -1,5 +1,6 @@
 using System;
 using System.Reflection;
+using Microsoft.AspNetCore.Authorization;
 
 public static class EnvironmentExtensions
 {
@@ -56,15 +57,36 @@ public static class EnvironmentExtensions
 
             foreach (MethodInfo method in methods)
             {
-                var reflected_method = (API_PathAttribute)Attribute
+                var path_attr_reflected_method = (API_PathAttribute)Attribute
                                         .GetCustomAttribute(apiType
                                         .GetMethod(method.Name),
                                         typeof(API_PathAttribute));
 
 
-                if (reflected_method != null)
+                var auth_attr_reflected_method = (API_AuthAttribute)AuthorizeAttribute
+                         .GetCustomAttribute(apiType
+                         .GetMethod(method.Name),
+                         typeof(API_AuthAttribute));
+
+                if (auth_attr_reflected_method != null)
                 {
-                    if (reflected_method.RouteAPI == path)
+                    if (auth_attr_reflected_method.RouteAPI == path &&
+                        auth_attr_reflected_method.AuthType == "Jwt")
+                    {
+                        MethodInfo methodtoexecute = apiType.GetMethod("Unauthorized");
+                        if (methodtoexecute != null)
+                        {
+                            object myClassInstance = Activator.CreateInstance(apiType);
+                            result = methodtoexecute.Invoke(myClassInstance, null).ToString();
+                        }
+
+                        return result;
+                    }
+                }
+
+                if (path_attr_reflected_method != null)
+                {
+                    if (path_attr_reflected_method.RouteAPI == path)
                     {
 
                         MethodInfo methodtoexecute = apiType.GetMethod(method.Name);
