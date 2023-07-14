@@ -1,5 +1,6 @@
 using System;
 using System.Reflection;
+using System.Text.Json;
 using Microsoft.AspNetCore.Authorization;
 
 public static class EnvironmentExtensions
@@ -10,6 +11,19 @@ public static class EnvironmentExtensions
             return false;
         }
         return environment == "PROD";
+    }
+
+
+    public static string GetJSON(this object text)
+    {
+        string response;
+
+        response = "HTTP/1.1 200 OK\r\n" +
+                        "Content-Type: application/json\r\n" +
+                        "\r\n" +
+                       JsonSerializer.Serialize(text);
+
+        return response;
     }
 
 
@@ -42,7 +56,7 @@ public static class EnvironmentExtensions
         string response = "";
         string result = "";
         //var APIFolder = Environment.CurrentDirectory + "\\" + "API";
-        var APIFolder = Path.Combine(Environment.CurrentDirectory, "API");
+        var APIFolder = Path.Combine(Environment.CurrentDirectory, "APIs");
         string[] apiFiles = Directory.GetFiles(APIFolder, "*.cs");
 
 

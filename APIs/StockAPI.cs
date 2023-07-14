@@ -26,7 +26,7 @@ namespace Webserver.API
         public static string Hej()
         {
 
-            string responseContent = EnvironmentExtensions.GetHTML("html/hej.html");
+            string responseContent = EnvironmentExtensions.GetJSON(new {name= "sadsadsa he" });
             return responseContent;
 
 
